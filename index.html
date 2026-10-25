@@ -269,6 +269,8 @@ const CONFIG = {
   gamdomUrl: "https://gamdom.com/r/xxrev",                 // replace with your affiliate sign-up link
   watchUrl: "https://kick.com/xxrev",                   // replace with your stream URL
   currency: "$",
+    periodEnd: "2026-12-01T00:00:00Z",               // moment the leaderboard closes. This is the very end of Nov 30 in UTC
+  periodNote: "Live now. Ends November 30 (UTC).", // text shown under the Leaderboard heading
   prizes: [250, 150, 100, 50, 50, 20, 20, 20, 20, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15], // one prize per rank, top to bottom
   // Sample rows so the layout is visible. Replace with real tracked data and set isSample to false.
   isSample: true,
@@ -325,11 +327,8 @@ $("#poolVal").textContent = fmt(CONFIG.prizes.reduce((a, b) => a + b, 0));
 $("#playerCount").textContent = players.length;
 if (CONFIG.isSample) $("#sampleFlag").innerHTML = '<div class="sample-flag">Sample data shown. Replace the players in CONFIG with real tracked results.</div>';
 
-const now = new Date();
-const periodStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-const periodEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
-const monthName = periodStart.toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
-$("#lbPeriod").textContent = monthName + " period. Resets on the 1st (UTC).";
+const periodEnd = new Date(CONFIG.periodEnd);
+$("#lbPeriod").textContent = CONFIG.periodNote;
 
 $("#podium").innerHTML = players.slice(0, 3).map((p, i) => `
   <div class="pod p${i + 1}">
@@ -343,7 +342,8 @@ $("#lbBody").innerHTML = players.slice(3).map((p, i) => `
   <tr><td class="rank">${i + 4}</td><td>${p.name}</td><td class="num">${fmt(p.wagered)}</td><td class="num prize">${fmt(prize(i + 3))}</td></tr>`).join("");
 
 function tick() {
-  let s = Math.max(0, Math.floor((periodEnd - Date.now()) / 1000));
+  if (periodEnd - Date.now() <= 0) { $("#countdown").textContent = "Ended"; return; }
+  let s = Math.floor((periodEnd - Date.now()) / 1000);
   const d = Math.floor(s / 86400); s %= 86400;
   const h = Math.floor(s / 3600); s %= 3600;
   const m = Math.floor(s / 60); s %= 60;
