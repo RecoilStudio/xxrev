@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>XXREV</title>
+<meta name="description" content="XXREV on Gamdom: monthly wager leaderboard, official links and FAQ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout: sticky top bar with three tabs, one-line hero, then the active tab's panel. Podium + table on Leaderboard, link cards on Links, accordion on FAQ. */
+  :root {
+    --bg: #060f09;
+    --surface: #0c1b12;
+    --surface-2: #112619;
+    --line: #1d3a28;
+    --text: #e4f2e9;
+    --muted: #8aae97;
+    --accent: #2fe074;
+    --accent-deep: #12a94d;
+    --accent-ink: #04140a;
+    --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+    --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(900px 420px at 80% -10%, rgba(47,224,116,.16), transparent 70%),
+      radial-gradient(700px 400px at -10% 30%, rgba(18,169,77,.12), transparent 70%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.55;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 48px;
+    min-height: 100vh;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 1040px; margin-inline: auto; }
+
+  /* top bar */
+  .bar {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(6,15,9,.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+    padding-inline: max(16px, env(safe-area-inset-left, 0px));
+  }
+  .bar .wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding-block: 12px; }
+  .brand { font-family: var(--font-display); font-weight: 900; font-size: 34px; letter-spacing: .02em; text-decoration: none; line-height: 1; }
+  .brand span { color: var(--accent); }
+  nav { display: flex; gap: 6px; margin-left: auto; }
+  .tab {
+    appearance: none; border: 1px solid transparent; background: none; color: var(--muted);
+    font: 600 15px/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase;
+    padding: 12px 18px; border-radius: 999px; cursor: pointer; text-decoration: none;
+    transition: color .15s, background .15s, border-color .15s;
+  }
+  .tab:hover { color: var(--text); border-color: var(--line); }
+  .tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+
+  /* partner logo slot */
+  .gdm-logo { display: inline-flex; align-items: center; justify-content: center; }
+  .gdm-logo img { height: 100%; width: auto; object-fit: contain; }
+  .gdm-logo .slot {
+    height: 100%; display: inline-flex; align-items: center; padding: 0 12px;
+    border: 1.5px dashed var(--accent-deep); border-radius: 8px; color: var(--accent);
+    font: 600 11px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+  }
+  .bar .gdm-logo { height: 30px; }
+
+  /* hero */
+  .hero { padding: 44px 0 28px; display: grid; gap: 22px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 12px; font: 600 13px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .eyebrow .gdm-logo { height: 26px; }
+  h1 {
+    margin: 0; font-family: var(--font-display); font-weight: 900; text-transform: uppercase;
+    font-size: clamp(76px, 17vw, 168px); line-height: .84; letter-spacing: -.01em; text-wrap: balance;
+  }
+  h1 em { font-style: normal; color: var(--accent); text-shadow: 0 0 42px rgba(47,224,116,.45); }
+  .hero p { margin: 0; max-width: 54ch; color: var(--muted); font-size: 19px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer;
+    font: 700 15px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase;
+    padding: 15px 22px; border-radius: 10px; border: 1.5px solid var(--accent);
+    background: var(--accent); color: var(--accent-ink); transition: transform .12s, box-shadow .12s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(47,224,116,.28); }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .code {
+    display: inline-flex; align-items: center; gap: 12px; border: 1px dashed var(--accent-deep);
+    border-radius: 10px; padding: 8px 8px 8px 16px; background: var(--surface);
+  }
+  .code small { color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  .code b { font: 700 18px var(--font-mono); letter-spacing: .08em; color: var(--accent); }
+  .code button { appearance: none; border: 0; border-radius: 7px; padding: 9px 12px; cursor: pointer; background: var(--surface-2); color: var(--text); font: 600 13px var(--font-body); letter-spacing: .08em; text-transform: uppercase; }
+  .code button:hover { background: var(--line); }
+
+  /* sections */
+  main section[hidden] { display: none !important; }
+  h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: clamp(36px, 6vw, 56px); line-height: 1; margin: 0 0 6px; letter-spacing: .01em; }
+  .sub { margin: 0 0 26px; color: var(--muted); }
+
+  /* leaderboard */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 26px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; min-width: 0; }
+  .stat small { display: block; color: var(--muted); font: 600 12px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+  .stat strong { font: 700 clamp(22px, 4vw, 30px)/1.1 var(--font-mono); font-variant-numeric: tabular-nums; }
+  .stat strong.green { color: var(--accent); }
+  .sample-flag { display: inline-block; margin-bottom: 16px; padding: 6px 10px; border-radius: 6px; background: rgba(255,200,60,.1); border: 1px solid rgba(255,200,60,.4); color: #ffd36a; font: 600 12px/1.3 var(--font-mono); letter-spacing: .04em; }
+
+  .podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: end; margin-bottom: 26px; }
+  .pod { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 16px; text-align: center; min-width: 0; position: relative; overflow: hidden; }
+  .pod .rk { font: 900 64px/1 var(--font-display); color: var(--muted); }
+  .pod .nm { font-weight: 600; font-size: 19px; overflow-wrap: anywhere; margin: 4px 0 10px; }
+  .pod .wg { font: 500 13px var(--font-mono); color: var(--muted); }
+  .pod .wg b { display: block; font-size: 17px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .pod .pz { margin-top: 14px; display: inline-block; padding: 7px 14px; border-radius: 999px; background: var(--surface-2); color: var(--accent); font: 700 17px var(--font-mono); font-variant-numeric: tabular-nums; }
+  .pod.p1 { order: 2; padding-block: 34px; border-color: var(--accent); background: linear-gradient(180deg, rgba(47,224,116,.16), var(--surface) 70%); box-shadow: 0 0 60px rgba(47,224,116,.14); }
+  .pod.p1 .rk { color: var(--accent); font-size: 96px; }
+  .pod.p1 .pz { background: var(--accent); color: var(--accent-ink); }
+  .pod.p2 { order: 1; }
+  .pod.p3 { order: 3; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { font: 600 12px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  td.rank { font: 800 22px var(--font-display); color: var(--muted); width: 64px; }
+  td.prize { color: var(--accent); font-weight: 700; }
+  tbody tr:hover { background: rgba(47,224,116,.05); }
+
+  /* links */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card {
+    display: flex; flex-direction: column; gap: 8px; text-decoration: none; min-width: 0;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    transition: border-color .15s, transform .15s, background .15s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-3px); background: var(--surface-2); }
+  .card h3 { margin: 0; font: 800 28px/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; }
+  .card p { margin: 0; color: var(--muted); font-size: 16px; }
+  .card .go { margin-top: auto; padding-top: 10px; color: var(--accent); font: 600 13px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+  .card.feature { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 22px; flex-wrap: wrap; border-color: var(--accent-deep); background: linear-gradient(100deg, rgba(47,224,116,.14), var(--surface) 60%); }
+  .card.feature .gdm-logo { height: 52px; }
+  .card.feature .txt { flex: 1 1 260px; display: grid; gap: 6px; min-width: 0; }
+
+  /* faq */
+  .faq { display: grid; gap: 10px; max-width: 780px; }
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+  details[open] { border-color: var(--accent-deep); }
+  summary { cursor: pointer; list-style: none; padding: 18px 22px; font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font: 700 26px/1 var(--font-mono); color: var(--accent); flex: none; }
+  details[open] summary::after { content: "\2212"; }
+  details p { margin: 0; padding: 0 22px 20px; color: var(--muted); }
+
+  footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: grid; gap: 10px; }
+  footer .age { display: inline-flex; gap: 10px; align-items: center; color: var(--text); font-weight: 600; }
+  footer .age b { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); font: 700 13px var(--font-mono); }
+  footer a { color: var(--accent); }
+
+  .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--accent); color: var(--accent-ink); padding: 11px 18px; border-radius: 999px; font-weight: 700; transition: .2s; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 720px) {
+    body { font-size: 16px; }
+    nav { margin-left: 0; width: 100%; justify-content: space-between; }
+    .tab { flex: 1; text-align: center; padding-inline: 8px; }
+    .bar .gdm-logo { margin-left: auto; }
+    .podium { grid-template-columns: 1fr; }
+    .pod.p1 { order: 1; } .pod.p2 { order: 2; } .pod.p3 { order: 3; }
+    .pod .rk { font-size: 52px; } .pod.p1 .rk { font-size: 72px; }
+    th, td { padding: 12px 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#leaderboard" aria-label="XXREV home">XX<span>REV</span></a>
+    <span class="gdm-logo" data-gdm-logo></span>
+    <nav role="tablist" aria-label="Site sections">
+      <a class="tab" role="tab" href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
+      <a class="tab" role="tab" href="#links" data-tab="links">Links</a>
+      <a class="tab" role="tab" href="#faq" data-tab="faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow"><span>Official Gamdom streamer</span></div>
+    <h1>XX<em>REV</em></h1>
+    <p>Live slots and casino sessions on Gamdom. Sign up with the code below, wager through the month and climb the leaderboard for a share of the prize pool.</p>
+    <div class="hero-actions">
+      <a class="btn" id="watchBtn" href="#" target="_blank" rel="noopener">Watch live</a>
+      <a class="btn ghost" id="joinBtn" href="#" target="_blank" rel="noopener sponsored">Join on Gamdom</a>
+      <div class="code"><div><small>Code</small><br><b id="codeText">XXREV</b></div><button type="button" id="copyBtn">Copy</button></div>
+    </div>
+  </div>
+
+  <main>
+    <!-- LEADERBOARD -->
+    <section id="leaderboard" aria-labelledby="h-lb">
+      <h2 id="h-lb">Monthly Leaderboard</h2>
+      <p class="sub" id="lbPeriod"></p>
+      <div id="sampleFlag"></div>
+      <div class="stats">
+        <div class="stat"><small>Prize pool</small><strong class="green" id="poolVal"></strong></div>
+        <div class="stat"><small>Ends in</small><strong id="countdown">--</strong></div>
+        <div class="stat"><small>Players ranked</small><strong id="playerCount"></strong></div>
+      </div>
+      <div class="podium" id="podium"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Player</th><th class="num">Wagered</th><th class="num">Prize</th></tr></thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- LINKS -->
+    <section id="links" aria-labelledby="h-links" hidden>
+      <h2 id="h-links">Links</h2>
+      <p class="sub">Everything official in one place.</p>
+      <div class="cards" id="linkCards"></div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" aria-labelledby="h-faq" hidden>
+      <h2 id="h-faq">FAQ</h2>
+      <p class="sub">Quick answers about the leaderboard and prizes.</p>
+      <div class="faq" id="faqList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="age"><b>18+</b> Gambling is for adults only and can be addictive. Play within your limits.</span>
+    <span>If gambling stops being fun, visit <a href="https://www.begambleaware.org" target="_blank" rel="noopener">BeGambleAware.org</a> for free support. This site is run by XXREV and promotes Gamdom through an affiliate code, so the streamer may earn a commission on sign-ups. Not affiliated with or endorsed by Gamdom unless stated by them. Check that online gambling is legal where you live.</span>
+    <span>&copy; <span id="yr"></span> XXREV</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Code copied</div>
+
+<script>
+/* ============ EDIT THIS BLOCK ============ */
+const CONFIG = {
+  streamer: "XXREV",
+  code: "XXREV",                                   // your Gamdom affiliate code
+  gamdomLogo: "gamdom-logo.png",                   // put the official logo file next to index.html (or paste a URL / data URI)
+  gamdomUrl: "https://gamdom.com",                 // replace with your affiliate sign-up link
+  watchUrl: "https://kick.com/",                   // replace with your stream URL
+  currency: "$",
+  prizes: [2500, 1000, 500, 250, 150, 100, 75, 50, 40, 35], // one prize per rank, top to bottom
+  // Sample rows so the layout is visible. Replace with real tracked data and set isSample to false.
+  isSample: true,
+  players: [
+    { name: "No***ire",  wagered: 184220 },
+    { name: "Sp***Dad",  wagered: 151905 },
+    { name: "Ve***ura",  wagered: 129480 },
+    { name: "Ho***Rod",  wagered: 98312 },
+    { name: "Ma***777",  wagered: 76044 },
+    { name: "Tw***ter",  wagered: 61870 },
+    { name: "Gr***Fox",  wagered: 48655 },
+    { name: "Ba***ngo",  wagered: 39021 },
+    { name: "Cl***ver",  wagered: 27388 },
+    { name: "Ra***mer",  wagered: 18940 }
+  ],
+  links: [
+    { title: "Live stream", text: "Catch XXREV live on stream.", url: "https://kick.com/", cta: "Watch now" },
+    { title: "YouTube", text: "Highlights, big wins and full sessions.", url: "https://youtube.com/", cta: "Subscribe" },
+    { title: "X / Twitter", text: "Stream alerts and giveaway announcements.", url: "https://x.com/", cta: "Follow" },
+    { title: "Discord", text: "Join the community, chat and enter giveaways.", url: "https://discord.com/", cta: "Join server" },
+    { title: "Telegram", text: "Instant notifications when XXREV goes live.", url: "https://t.me/", cta: "Join channel" }
+  ],
+  faq: [
+    ["How do I join the leaderboard?", "Create a new Gamdom account through the Join on Gamdom button and enter the code above when you register. Your wagers are tracked from then on."],
+    ["How is the leaderboard ranked?", "Players are ranked by total amount wagered during the current monthly period. The more you wager, the higher you climb."],
+    ["When does it reset and when are prizes paid?", "The leaderboard resets at the start of every month. Winners are contacted after the period closes and prizes are paid to their Gamdom accounts."],
+    ["I already have a Gamdom account. Can I take part?", "Tracking is tied to the code used at sign-up. Ask in the Discord whether your existing account can be linked."],
+    ["Why are usernames hidden?", "Names are partly masked to protect player privacy."],
+    ["Is gambling safe?", "Gambling always carries risk and you should only play with money you can afford to lose. You must be 18 or older, set deposit limits, take breaks and stop if it stops being fun."]
+  ]
+};
+/* ========================================= */
+
+const $ = (s, r = document) => r.querySelector(s);
+const fmt = n => CONFIG.currency + Math.round(n).toLocaleString("en-US");
+
+/* Gamdom logo slots: shows the file if present, otherwise a labelled placeholder */
+document.querySelectorAll("[data-gdm-logo]").forEach(el => {
+  const img = new Image();
+  img.alt = "Gamdom";
+  img.onload = () => { el.textContent = ""; el.appendChild(img); };
+  img.onerror = () => { el.innerHTML = '<span class="slot">Gamdom logo here</span>'; };
+  el.innerHTML = '<span class="slot">Gamdom logo here</span>';
+  img.src = CONFIG.gamdomLogo;
+});
+
+$("#codeText").textContent = CONFIG.code;
+$("#watchBtn").href = CONFIG.watchUrl;
+$("#joinBtn").href = CONFIG.gamdomUrl;
+$("#yr").textContent = new Date().getFullYear();
+
+/* Leaderboard */
+const players = [...CONFIG.players].sort((a, b) => b.wagered - a.wagered);
+const prize = i => CONFIG.prizes[i] || 0;
+$("#poolVal").textContent = fmt(CONFIG.prizes.reduce((a, b) => a + b, 0));
+$("#playerCount").textContent = players.length;
+if (CONFIG.isSample) $("#sampleFlag").innerHTML = '<div class="sample-flag">Sample data shown. Replace the players in CONFIG with real tracked results.</div>';
+
+const now = new Date();
+const periodStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+const periodEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+const monthName = periodStart.toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+$("#lbPeriod").textContent = monthName + " period. Resets on the 1st (UTC).";
+
+$("#podium").innerHTML = players.slice(0, 3).map((p, i) => `
+  <div class="pod p${i + 1}">
+    <div class="rk">${i + 1}</div>
+    <div class="nm">${p.name}</div>
+    <div class="wg">Wagered<b>${fmt(p.wagered)}</b></div>
+    <div class="pz">${fmt(prize(i))}</div>
+  </div>`).join("");
+
+$("#lbBody").innerHTML = players.slice(3).map((p, i) => `
+  <tr><td class="rank">${i + 4}</td><td>${p.name}</td><td class="num">${fmt(p.wagered)}</td><td class="num prize">${fmt(prize(i + 3))}</td></tr>`).join("");
+
+function tick() {
+  let s = Math.max(0, Math.floor((periodEnd - Date.now()) / 1000));
+  const d = Math.floor(s / 86400); s %= 86400;
+  const h = Math.floor(s / 3600); s %= 3600;
+  const m = Math.floor(s / 60); s %= 60;
+  $("#countdown").textContent = `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+}
+tick(); setInterval(tick, 1000);
+
+/* Links */
+$("#linkCards").innerHTML = `
+  <a class="card feature" href="${CONFIG.gamdomUrl}" target="_blank" rel="noopener sponsored">
+    <span class="gdm-logo" data-gdm-logo2></span>
+    <span class="txt"><h3>Play on Gamdom</h3><p>Sign up through this link and use code <b style="color:var(--accent)">${CONFIG.code}</b> to be entered on the leaderboard.</p></span>
+    <span class="go">Sign up &rarr;</span>
+  </a>` + CONFIG.links.map(l => `
+  <a class="card" href="${l.url}" target="_blank" rel="noopener">
+    <h3>${l.title}</h3><p>${l.text}</p><span class="go">${l.cta} &rarr;</span>
+  </a>`).join("");
+document.querySelectorAll("[data-gdm-logo2]").forEach(el => {
+  const img = new Image(); img.alt = "Gamdom";
+  el.innerHTML = '<span class="slot">Gamdom logo here</span>';
+  img.onload = () => { el.textContent = ""; el.appendChild(img); };
+  img.src = CONFIG.gamdomLogo;
+});
+
+/* FAQ */
+$("#faqList").innerHTML = CONFIG.faq.map(([q, a], i) => `
+  <details${i === 0 ? " open" : ""}><summary>${q}</summary><p>${a}</p></details>`).join("");
+
+/* Tabs (hash routed: #leaderboard, #links, #faq) */
+const tabs = [...document.querySelectorAll("[data-tab]")];
+function show() {
+  const id = ["leaderboard", "links", "faq"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "leaderboard";
+  document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== id);
+  tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === id)));
+}
+window.addEventListener("hashchange", () => { show(); window.scrollTo({ top: 0 }); });
+show();
+
+/* Copy code */
+$("#copyBtn").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(CONFIG.code); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($("#codeText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  const t = $("#toast"); t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1400);
+});
+</script>
+</body>
+</html>
