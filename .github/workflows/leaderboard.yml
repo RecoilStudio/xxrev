@@ -26,6 +26,8 @@ jobs:
       - name: Fetch leaderboard from Gamdom
         env:
           GAMDOM_API_KEY: ${{ secrets.GAMDOM_API_KEY }}
+          LB_START: "2026-10-23"   # first day counted (UTC). Delete both lines to follow each calendar month automatically
+          LB_END: "2026-11-30"     # last day counted (UTC)
         run: node scripts/fetch-leaderboard.mjs
 
       - name: Commit if the numbers changed
