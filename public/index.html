@@ -68,7 +68,7 @@
     transition: color .15s, background .15s, border-color .15s;
   }
   .tab:hover { color: var(--text); border-color: var(--line); }
-  .tab { position: relative; z-index: 1; }
+  .tab { position: relative; z-index: 1; white-space: nowrap; }
   .tab[aria-selected="true"] { color: var(--accent-ink); border-color: transparent; }
   nav { position: relative; }
   .tab-ind { position: absolute; z-index: 0; left: 0; top: 0; height: 100%; width: 0; border-radius: 999px; pointer-events: none;
@@ -211,8 +211,10 @@
 
   @media (max-width: 720px) {
     body { font-size: 16px; }
-    nav { margin-left: 0; width: 100%; justify-content: space-between; }
-    .tab { flex: 1; text-align: center; padding-inline: 8px; }
+    nav { margin-left: 0; width: 100%; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-bottom: 2px; }
+    nav::-webkit-scrollbar { display: none; }
+    .tab { flex: none; text-align: center; padding-inline: 16px; white-space: nowrap; scroll-snap-align: center; }
+    .car-track { scroll-padding-left: 2px; }
     .bar .gdm-logo { margin-left: auto; }
     .podium { grid-template-columns: 1fr; }
     .pod.p1 { order: 1; } .pod.p2 { order: 2; } .pod.p3 { order: 3; }
@@ -308,6 +310,59 @@
   tbody tr { transition: background .15s, box-shadow .15s; }
   tbody tr:hover { box-shadow: inset 3px 0 0 var(--accent); }
 
+
+  /* tweet carousels */
+  .car { position: relative; }
+  .car-track {
+    display: flex; gap: 14px; align-items: flex-start; overflow-x: auto; padding: 4px 2px 18px;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth; overscroll-behavior-x: contain;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+  }
+  .car-track::-webkit-scrollbar { display: none; }
+  .car-track:focus-visible { outline-offset: 2px; }
+  .slide {
+    flex: 0 0 min(400px, 88%); min-width: 0; scroll-snap-align: start; position: relative; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px;
+    transition: border-color .25s, box-shadow .25s, opacity .35s, transform .35s;
+  }
+  .slide:hover { border-color: var(--accent-deep); box-shadow: 0 10px 40px rgba(47,224,116,.1); }
+  .slide .tw-holder { min-height: 0; display: flex; justify-content: center; }
+  .slide .tw-holder > * { margin: 0 !important; max-width: 100% !important; }
+  .slide .ph {
+    min-height: 280px; display: grid; place-content: center; gap: 10px; text-align: center; border-radius: 12px; padding: 20px;
+    color: var(--muted); font: 600 12px/1.5 var(--font-mono); letter-spacing: .12em; text-transform: uppercase;
+    background: linear-gradient(100deg, transparent 30%, rgba(47,224,116,.07) 50%, transparent 70%) 0 0 / 250% 100%, var(--surface-2);
+    animation: shimmer 2.4s linear infinite;
+  }
+  .slide.loaded .ph { display: none; }
+  .slide.failed .ph { animation: none; background: var(--surface-2); }
+  .slide .ph .x { font: 800 34px/1 var(--font-display); color: var(--text); letter-spacing: 0; }
+  .slide .view {
+    display: block; margin-top: 12px; text-align: center; text-decoration: none; color: var(--accent);
+    font: 600 12px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; padding: 8px;
+    border-radius: 999px; transition: background .2s, color .2s;
+  }
+  .slide .view:hover { background: var(--accent); color: var(--accent-ink); }
+  .car-bar { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
+  .car-btn {
+    flex: none; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center;
+    background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);
+    font: 700 18px/1 var(--font-body); transition: transform .2s cubic-bezier(.2,.8,.3,1.3), background .2s, color .2s, box-shadow .2s, opacity .2s;
+  }
+  .car-btn:hover:not(:disabled) { background: var(--accent); color: var(--accent-ink); transform: scale(1.1); box-shadow: 0 8px 24px rgba(47,224,116,.38); }
+  .car-btn:active:not(:disabled) { transform: scale(.92); }
+  .car-btn:disabled { opacity: .3; cursor: default; }
+  .car-dots { flex: 1; display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; }
+  .car-dot { position: relative; width: 22px; height: 28px; padding: 0; border: 0; background: none; cursor: pointer; }
+  .car-dot::before { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; border-radius: 99px; transform: translate(-50%, -50%); background: var(--line); transition: width .3s cubic-bezier(.2,.8,.3,1.3), background .25s, box-shadow .25s; }
+  .car-dot:hover::before { background: var(--accent-deep); }
+  .car-dot[aria-current="true"]::before { width: 22px; background: var(--accent); box-shadow: 0 0 14px rgba(47,224,116,.55); }
+  .car-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; color: var(--muted); font-size: 15px; }
+  .car-foot .btn { padding: 14px 22px; }
+  @media (max-width: 720px) { .car-btn { width: 44px; height: 44px; } .slide { flex-basis: 88%; } }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .js .reveal:not(.in) { opacity: 1 !important; }
@@ -359,6 +414,8 @@
     <nav role="tablist" aria-label="Site sections">
       <span class="tab-ind" id="tabInd" aria-hidden="true"></span>
       <a class="tab" role="tab" href="#leaderboard" data-tab="leaderboard">Leaderboard</a>
+      <a class="tab" role="tab" href="#book" data-tab="book">Book It With Rev</a>
+      <a class="tab" role="tab" href="#vlogs" data-tab="vlogs">Revs Minivlogs</a>
       <a class="tab" role="tab" href="#links" data-tab="links">Links</a>
       <a class="tab" role="tab" href="#faq" data-tab="faq">FAQ</a>
     </nav>
@@ -405,6 +462,20 @@
       <div class="cards" id="linkCards"></div>
     </section>
 
+    <!-- BOOK IT WITH REV -->
+    <section id="book" aria-labelledby="h-book" hidden>
+      <h2 id="h-book">Book It With Rev</h2>
+      <p class="sub">The latest posts from @XXTHEREV on X. Swipe or use the arrows.</p>
+      <div class="car" id="car-book"></div>
+    </section>
+
+    <!-- REVS MINIVLOGS -->
+    <section id="vlogs" aria-labelledby="h-vlogs" hidden>
+      <h2 id="h-vlogs">Revs Minivlogs</h2>
+      <p class="sub">Clips and minivlogs from @XXTHEREV. Swipe or use the arrows.</p>
+      <div class="car" id="car-vlogs"></div>
+    </section>
+
     <!-- FAQ -->
     <section id="faq" aria-labelledby="h-faq" hidden>
       <h2 id="h-faq">FAQ</h2>
@@ -435,7 +506,7 @@ const CONFIG = {
     periodEnd: "2026-12-01T00:00:00Z",               // moment the leaderboard closes. This is the very end of Nov 30 in UTC
   periodNote: "Live now. Ends November 30 (UTC).", // text shown under the Leaderboard heading
   prizes: [250, 150, 100, 50, 50, 20, 20, 20, 20, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15], // one prize per rank, top to bottom
-  // Sample rows so the layout is visible. Replace with real tracked data and set isSample to false.
+  // Sample rows, only shown if leaderboard.json can't be loaded (for example before the first Action run).
   isSample: true,
   players: [
     { name: "No***ire",  wagered: 184220 },
@@ -474,6 +545,18 @@ const CONFIG = {
     { title: "X / Twitter", text: "Stream alerts and giveaway announcements.", url: "https://x.com/XXTHEREV", cta: "Follow" },
     { title: "Discord", text: "Join the community, chat and enter giveaways.", url: "https://discord.gg/2AESzq8A4", cta: "Join server" },
   ],
+  xHandle: "XXTHEREV",
+  // X post IDs, in the order they appear. Kept as text because the numbers are too big for JavaScript to store exactly.
+  // Paste more IDs (the long number at the end of a post's link) to add posts; delete one to remove it.
+  bookTweets: [
+    "2118408337662583028", "2118002572569002394", "2117861943381774692", "2117762206708154514",
+    "2117401861020074107", "2117051016411767295", "2116674437898801171", "2116564566956253626"
+  ],
+  vlogTweets: [
+    "2117200977782767935", "2117414235000999945", "2117681528700391922", "2117761060681752805",
+    "2117815955472736740", "2117987618680111407", "2118098888741826897", "2118349228619517954",
+    "2118511980537655410"
+  ],
   faq: [
     ["How do I join the leaderboard?", "Create a new Gamdom account through the Join on Gamdom button and enter the code above when you register. Your wagers are tracked from then on."],
     ["How is the leaderboard ranked?", "Players are ranked by total amount wagered during the current monthly period. The more you wager, the higher you climb."],
@@ -504,26 +587,28 @@ $("#joinBtn").href = CONFIG.gamdomUrl;
 $("#promoLink").href = CONFIG.gamdomUrl;
 $("#yr").textContent = new Date().getFullYear();
 
-/* Leaderboard */
-const players = [...CONFIG.players].sort((a, b) => b.wagered - a.wagered);
+/* Leaderboard. Live numbers come from leaderboard.json, which a GitHub Action refreshes from the Gamdom API. */
+let players = [], playerTotal = 0, periodEnd = new Date(CONFIG.periodEnd);
 const prize = i => CONFIG.prizes[i] || 0;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 $("#poolVal").textContent = fmt(CONFIG.prizes.reduce((a, b) => a + b, 0));
-$("#playerCount").textContent = players.length;
-if (CONFIG.isSample) $("#sampleFlag").innerHTML = '<div class="sample-flag">Sample data shown. Replace the players in CONFIG with real tracked results.</div>';
-
-const periodEnd = new Date(CONFIG.periodEnd);
 $("#lbPeriod").textContent = CONFIG.periodNote;
 
-$("#podium").innerHTML = players.slice(0, 3).map((p, i) => `
+function renderBoard(list, total) {
+  players = [...list].sort((a, b) => b.wagered - a.wagered);
+  playerTotal = total == null ? players.length : total;
+  $("#playerCount").textContent = playerTotal;
+  $("#podium").innerHTML = players.slice(0, 3).map((p, i) => `
   <div class="pod p${i + 1}">
     <div class="rk">${i + 1}</div>
-    <div class="nm">${p.name}</div>
+    <div class="nm">${esc(p.name)}</div>
     <div class="wg">Wagered<b>${fmt(p.wagered)}</b></div>
     <div class="pz">${fmt(prize(i))}</div>
   </div>`).join("");
-
-$("#lbBody").innerHTML = players.slice(3).map((p, i) => `
-  <tr><td class="rank">${i + 4}</td><td>${p.name}</td><td class="num">${fmt(p.wagered)}</td><td class="num prize">${fmt(prize(i + 3))}</td></tr>`).join("");
+  $("#lbBody").innerHTML = players.length ? players.slice(3).map((p, i) => `
+  <tr><td class="rank">${i + 4}</td><td>${esc(p.name)}</td><td class="num">${fmt(p.wagered)}</td><td class="num prize">${fmt(prize(i + 3))}</td></tr>`).join("")
+    : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:28px">No wagers recorded yet this month. Be the first on the board.</td></tr>';
+}
 
 function tick() {
   if (periodEnd - Date.now() <= 0) { $("#countdown").textContent = "Ended"; return; }
@@ -534,6 +619,28 @@ function tick() {
   $("#countdown").textContent = `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
 }
 tick(); setInterval(tick, 1000);
+
+async function loadLive() {
+  try {
+    const r = await fetch("leaderboard.json?t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    if (!d || !Array.isArray(d.players) || !/^\d{4}-\d{2}$/.test(d.month || "")) throw new Error("bad shape");
+    const list = d.players.map(p => ({ name: String(p.name), wagered: Number(p.wagered) || 0 }));
+    const [y, mo] = d.month.split("-").map(Number);
+    periodEnd = new Date(Date.UTC(y, mo, 1));
+    const lastDay = new Date(periodEnd - 1).toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "UTC" });
+    $("#lbPeriod").textContent = periodEnd > Date.now() ? `Live now. Ends ${lastDay} (UTC).` : `Ended ${lastDay} (UTC). Final standings.`;
+    $("#sampleFlag").innerHTML = "";
+    renderBoard(list, d.totalPlayers);
+  } catch (e) {
+    // No live file yet (or opened locally): show the sample rows so the layout is visible.
+    if (CONFIG.isSample) $("#sampleFlag").innerHTML = '<div class="sample-flag">Sample data shown. Replace the players in CONFIG with real tracked results.</div>';
+    renderBoard(CONFIG.players);
+  }
+  const sec = $("#leaderboard");
+  if (sec && !sec.hidden) window.onShow("leaderboard");
+}
 
 /* Links */
 $("#linkCards").innerHTML = `
@@ -556,10 +663,12 @@ document.querySelectorAll("[data-gdm-logo2]").forEach(el => {
 $("#faqList").innerHTML = CONFIG.faq.map(([q, a], i) => `
   <details${i === 0 ? " open" : ""}><summary>${q}</summary><p>${a}</p></details>`).join("");
 
-/* Tabs (hash routed: #leaderboard, #links, #faq) */
+/* Tabs (hash routed: #leaderboard, #links, #book, #vlogs, #faq) */
+const ROUTES = ["leaderboard", "book", "vlogs", "links", "faq"];
+const routeId = () => ROUTES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "leaderboard";
 const tabs = [...document.querySelectorAll("[data-tab]")];
 function show() {
-  const id = ["leaderboard", "links", "faq"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "leaderboard";
+  const id = routeId();
   document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== id);
   tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === id)));
   if (window.onShow) window.onShow(id);
@@ -645,10 +754,10 @@ window.onShow = function (id) {
   if (sec) armReveal(sec);
   if (id === "leaderboard") {
     countUp($("#poolVal"), poolTotal, fmt);
-    countUp($("#playerCount"), players.length, n => String(Math.round(n)));
+    countUp($("#playerCount"), playerTotal, n => String(Math.round(n)));
   }
 };
-window.onShow(["leaderboard", "links", "faq"].includes(location.hash.slice(1)) ? location.hash.slice(1) : "leaderboard");
+window.onShow(routeId());
 
 /* Sliding tab pill */
 (function () {
@@ -683,6 +792,123 @@ document.querySelectorAll(".btn").forEach(b => {
     b.appendChild(s); setTimeout(() => s.remove(), 650);
   });
 });
+
+/* ============ X post carousels ============ */
+let xLoader;
+function loadX() {
+  if (window.twttr && twttr.widgets) return Promise.resolve(window.twttr);
+  if (xLoader) return xLoader;
+  xLoader = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://platform.twitter.com/widgets.js"; s.async = true; s.charset = "utf-8";
+    const t = setTimeout(() => reject(new Error("timeout")), 12000);
+    s.onload = () => { clearTimeout(t); window.twttr && twttr.widgets ? resolve(window.twttr) : reject(new Error("no widgets")); };
+    s.onerror = () => { clearTimeout(t); reject(new Error("blocked")); };
+    document.head.appendChild(s);
+  });
+  xLoader.catch(() => { xLoader = null; });   // allow a retry later
+  return xLoader;
+}
+
+async function embedSlide(slide) {
+  if (slide.dataset.state === "loading" || slide.dataset.state === "done") return;
+  slide.dataset.state = "loading"; slide.classList.remove("failed");
+  try {
+    const tw = await loadX();
+    const el = await tw.widgets.createTweet(slide.dataset.id, slide.querySelector(".tw-holder"), { theme: "dark", dnt: true, align: "center", conversation: "none" });
+    if (!el) throw new Error("unavailable");
+    slide.dataset.state = "done"; slide.classList.add("loaded");
+  } catch (e) {
+    slide.dataset.state = "fail"; slide.classList.add("failed");
+    slide.querySelector(".ph-msg").textContent = "Couldn't load this post here";
+  }
+}
+
+function buildCarousel(root, ids, label) {
+  const handle = CONFIG.xHandle;
+  root.innerHTML = `
+    <div class="car-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="${label}">
+      ${ids.map((id, i) => `
+      <article class="slide" data-id="${id}" aria-label="Post ${i + 1} of ${ids.length}">
+        <div class="tw-holder"></div>
+        <div class="ph"><span class="x" aria-hidden="true">&#120143;</span><span class="ph-msg">Loading post</span></div>
+        <a class="view" href="https://x.com/${handle}/status/${id}" target="_blank" rel="noopener">View on X &rarr;</a>
+      </article>`).join("")}
+    </div>
+    <div class="car-bar">
+      <button class="car-btn" type="button" data-dir="-1" aria-label="Previous post">&larr;</button>
+      <div class="car-dots" role="group" aria-label="Choose a post">${ids.map((_, i) => `<button class="car-dot" type="button" data-i="${i}" aria-label="Go to post ${i + 1}"></button>`).join("")}</div>
+      <button class="car-btn" type="button" data-dir="1" aria-label="Next post">&rarr;</button>
+    </div>
+    <div class="car-foot"><span>${ids.length} posts</span><a class="btn ghost" href="https://x.com/${handle}" target="_blank" rel="noopener">Follow @${handle} <i class="arr" aria-hidden="true">&rarr;</i></a></div>`;
+
+  const track = root.querySelector(".car-track");
+  const slides = [...track.children];
+  const dots = [...root.querySelectorAll(".car-dot")];
+  const prev = root.querySelector('[data-dir="-1"]'), next = root.querySelector('[data-dir="1"]');
+  let cur = 0, want = null;   // want: the dot the visitor clicked (the last posts can't always scroll to the left edge)
+
+  const nearest = () => {
+    let best = 0, bd = Infinity;
+    slides.forEach((s, i) => { const d = Math.abs(s.offsetLeft - track.scrollLeft - slides[0].offsetLeft); if (d < bd) { bd = d; best = i; } });
+    return best;
+  };
+  const paint = () => {
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    cur = atEnd ? (want != null ? want : slides.length - 1) : nearest();
+    dots.forEach((d, i) => d.setAttribute("aria-current", String(i === cur)));
+    prev.disabled = track.scrollLeft <= 4;
+    next.disabled = atEnd;
+  };
+  const go = i => {
+    i = Math.max(0, Math.min(slides.length - 1, i)); want = i;
+    track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: reduceMotion ? "auto" : "smooth" });
+  };
+  let raf;
+  track.addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(paint); }, { passive: true });
+  ["pointerdown", "wheel", "touchstart"].forEach(ev => track.addEventListener(ev, () => { want = null; }, { passive: true }));
+  prev.addEventListener("click", () => go(cur - 1));
+  next.addEventListener("click", () => go(cur + 1));
+  dots.forEach(d => d.addEventListener("click", () => go(+d.dataset.i)));
+  track.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+  });
+  addEventListener("resize", paint);
+
+  // Only load a post when it is about to scroll into view (and the tab is open)
+  const lazy = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting) { embedSlide(en.target); }
+  }), { root: track, rootMargin: "0px 700px 0px 700px" }) : null;
+  slides.forEach(s => lazy ? lazy.observe(s) : embedSlide(s));
+  // a failed post gets another try when the tab is opened again
+  root.retry = () => slides.forEach(s => { if (s.dataset.state === "fail") { s.dataset.state = ""; s.querySelector(".ph-msg").textContent = "Loading post"; embedSlide(s); } });
+  paint();
+}
+buildCarousel($("#car-book"), CONFIG.bookTweets, "Book It With Rev posts");
+buildCarousel($("#car-vlogs"), CONFIG.vlogTweets, "Revs Minivlogs posts");
+
+/* keep the active tab visible in the swipeable mobile nav, and retry failed posts on re-open */
+(function () {
+  const prev = window.onShow;
+  function keepTabVisible(id, smooth) {
+    const sel = tabs.find(t => t.dataset.tab === id), nav = sel && sel.parentElement;
+    if (nav && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: sel.offsetLeft - (nav.clientWidth - sel.offsetWidth) / 2, behavior: smooth && !reduceMotion ? "smooth" : "auto" });
+  }
+  window.onShow = id => {
+    prev(id);
+    keepTabVisible(id, true);
+    const car = id === "book" ? $("#car-book") : id === "vlogs" ? $("#car-vlogs") : null;
+    if (car && car.retry) car.retry();
+  };
+  keepTabVisible(routeId(), false);
+  // opening a tab link directly should start at the top (the browser's own jump to #id happens after load)
+  const top = () => { if (location.hash) window.scrollTo(0, 0); };
+  top();
+  addEventListener("load", () => { keepTabVisible(routeId(), false); top(); setTimeout(top, 60); });
+})();
+
+loadLive();
 </script>
 </body>
 </html>
