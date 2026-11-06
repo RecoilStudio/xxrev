@@ -1,0 +1,41 @@
+name: Update leaderboard
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # every 15 minutes (Gamdom refreshes its numbers about hourly)
+  workflow_dispatch:          # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: leaderboard
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch leaderboard from Gamdom
+        env:
+          GAMDOM_API_KEY: ${{ secrets.GAMDOM_API_KEY }}
+        run: node scripts/fetch-leaderboard.mjs
+
+      - name: Commit if the numbers changed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "leaderboard-bot"
+            git config user.email "leaderboard-bot@users.noreply.github.com"
+            git add -A
+            git commit -m "Update leaderboard"
+            git push || (git pull --rebase && git push)
+          else
+            echo "No changes"
+          fi
