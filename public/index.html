@@ -445,7 +445,7 @@
       <div class="stats">
         <div class="stat"><small>Prize pool</small><strong class="green" id="poolVal"></strong></div>
         <div class="stat"><small>Ends in</small><strong id="countdown">--</strong></div>
-        <div class="stat"><small>Players ranked</small><strong id="playerCount"></strong></div>
+        <div class="stat"><small>Players competing</small><strong id="playerCount"></strong></div>
       </div>
       <div class="podium" id="podium"></div>
       <div class="table-wrap">
@@ -599,15 +599,16 @@ $("#lbPeriod").textContent = CONFIG.periodNote;
 function renderBoard(list, total) {
   players = [...list].sort((a, b) => b.wagered - a.wagered);
   playerTotal = total == null ? players.length : total;
+  const shown = players.slice(0, CONFIG.prizes.length);   // only the paid places are listed
   $("#playerCount").textContent = playerTotal;
-  $("#podium").innerHTML = players.slice(0, 3).map((p, i) => `
+  $("#podium").innerHTML = shown.slice(0, 3).map((p, i) => `
   <div class="pod p${i + 1}">
     <div class="rk">${i + 1}</div>
     <div class="nm">${esc(p.name)}</div>
     <div class="wg">Wagered<b>${fmt(p.wagered)}</b></div>
     <div class="pz">${prizeTxt(i)}</div>
   </div>`).join("");
-  $("#lbBody").innerHTML = players.length ? players.slice(3).map((p, i) => `
+  $("#lbBody").innerHTML = shown.length ? shown.slice(3).map((p, i) => `
   <tr><td class="rank">${i + 4}</td><td>${esc(p.name)}</td><td class="num">${fmt(p.wagered)}</td><td class="num prize">${prizeTxt(i + 3)}</td></tr>`).join("")
     : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:28px">No wagers recorded yet this month. Be the first on the board.</td></tr>';
 }
@@ -627,12 +628,22 @@ async function loadLive() {
     const r = await fetch("leaderboard.json?t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
     if (!r.ok) throw new Error("HTTP " + r.status);
     const d = await r.json();
-    if (!d || !Array.isArray(d.players) || !/^\d{4}-\d{2}$/.test(d.month || "")) throw new Error("bad shape");
+    const isDay = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
+    const ranged = isDay(d && d.start) && isDay(d && d.end);
+    if (!d || !Array.isArray(d.players) || !(ranged || /^\d{4}-\d{2}$/.test(d.month || ""))) throw new Error("bad shape");
     const list = d.players.map(p => ({ name: String(p.name), wagered: Number(p.wagered) || 0 }));
-    const [y, mo] = d.month.split("-").map(Number);
-    periodEnd = new Date(Date.UTC(y, mo, 1));
-    const lastDay = new Date(periodEnd - 1).toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "UTC" });
-    $("#lbPeriod").textContent = periodEnd > Date.now() ? `Live now. Ends ${lastDay} (UTC).` : `Ended ${lastDay} (UTC). Final standings.`;
+    const dayLabel = dt => dt.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "UTC" });
+    if (ranged) {
+      const [ey, em, ed] = d.end.split("-").map(Number);
+      periodEnd = new Date(Date.UTC(ey, em - 1, ed + 1));           // the end day is included, so the period closes at the next midnight UTC
+      const startLabel = dayLabel(new Date(d.start + "T00:00:00Z")), endLabel = dayLabel(new Date(d.end + "T00:00:00Z"));
+      $("#lbPeriod").textContent = periodEnd > Date.now() ? `Live now. ${startLabel} to ${endLabel} (UTC).` : `Ended ${endLabel} (UTC). Final standings.`;
+    } else {
+      const [y, mo] = d.month.split("-").map(Number);
+      periodEnd = new Date(Date.UTC(y, mo, 1));
+      const lastDay = dayLabel(new Date(periodEnd - 1));
+      $("#lbPeriod").textContent = periodEnd > Date.now() ? `Live now. Ends ${lastDay} (UTC).` : `Ended ${lastDay} (UTC). Final standings.`;
+    }
     $("#sampleFlag").innerHTML = "";
     renderBoard(list, d.totalPlayers);
   } catch (e) {
