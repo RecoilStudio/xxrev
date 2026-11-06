@@ -4,11 +4,14 @@
 // Usernames are masked here, so full names and user IDs never reach the public repo.
 // The API key comes from the GAMDOM_API_KEY environment variable (GitHub secret). It is never logged.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
 
 const KEY = process.env.GAMDOM_API_KEY;
 const API = process.env.GAMDOM_API_URL || "https://gamdom.com/api/affiliates/leaderboard";
 const MAX = Number(process.env.LB_MAX_PLAYERS) || 50;   // players written to the file
+// Where the website lives. The files are written next to index.html: in public/ if that is where it is, otherwise the repo root.
+const OUT = process.env.LB_DIR ?? (existsSync("public/index.html") ? "public" : ".");
 const FORCE_MONTH = process.env.LB_MONTH;               // optional, e.g. 2026-11. Normally the current UTC month is used
 
 const fail = msg => { console.error("ERROR: " + msg); process.exit(1); };
@@ -72,5 +75,6 @@ async function save(path, obj) {
   console.log(`${path}: updated (${obj.totalPlayers} players)`);
 }
 
-await save("leaderboard.json", board(current));
-for (const m of months) await save(`snapshots/${m}.json`, board(m));
+console.log(`Writing to ${OUT === "." ? "the repo root" : OUT + "/"}`);
+await save(join(OUT, "leaderboard.json"), board(current));
+for (const m of months) await save(join(OUT, "snapshots", `${m}.json`), board(m));
