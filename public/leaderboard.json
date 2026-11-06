@@ -1,27 +1,49 @@
 {
+ "start": "2026-10-23",
+ "end": "2026-11-30",
  "month": "2026-11",
- "updated": "2026-11-06T19:31:38.825Z",
- "totalPlayers": 15,
+ "updated": "2026-11-06T23:20:37.661Z",
+ "totalPlayers": 23,
  "players": [
   {
+   "name": "Nd***747",
+   "wagered": 32945.99
+  },
+  {
    "name": "Re***zzz",
-   "wagered": 20236.01
+   "wagered": 23886.93
   },
   {
    "name": "xx***",
-   "wagered": 2282.33
+   "wagered": 5940.71
   },
   {
    "name": "Dt***",
-   "wagered": 1340.85
-  },
-  {
-   "name": "Co***art",
-   "wagered": 1069.14
+   "wagered": 4342.26
   },
   {
    "name": "Re***ine",
-   "wagered": 750.25
+   "wagered": 2001.13
+  },
+  {
+   "name": "Co***art",
+   "wagered": 1183.85
+  },
+  {
+   "name": "Hidden user",
+   "wagered": 1108.58
+  },
+  {
+   "name": "Mr***ton",
+   "wagered": 474.3
+  },
+  {
+   "name": "Ky***g55",
+   "wagered": 470.77
+  },
+  {
+   "name": "Ma***Dog",
+   "wagered": 361.31
   },
   {
    "name": "si***rev",
@@ -36,12 +58,20 @@
    "wagered": 222
   },
   {
-   "name": "Nd***747",
-   "wagered": 28.45
+   "name": "sa***",
+   "wagered": 117.3
   },
   {
-   "name": "Ky***g55",
-   "wagered": 12.62
+   "name": "Jh***ger",
+   "wagered": 105.2
+  },
+  {
+   "name": "8t***s3_",
+   "wagered": 55.98
+  },
+  {
+   "name": "Xx***",
+   "wagered": 34.52
   },
   {
    "name": "Da***045",
@@ -49,19 +79,23 @@
   },
   {
    "name": "if***",
-   "wagered": 10.92
+   "wagered": 11.82
   },
   {
-   "name": "Xx***",
-   "wagered": 10.11
+   "name": "si***",
+   "wagered": 8.41
   },
   {
-   "name": "Ma***Dog",
-   "wagered": 10
+   "name": "Gl***nis",
+   "wagered": 7.5
   },
   {
-   "name": "sa***",
-   "wagered": 0.23
+   "name": "gi***ney",
+   "wagered": 5.57
+  },
+  {
+   "name": "re***oat",
+   "wagered": 2.5
   }
  ]
 }
