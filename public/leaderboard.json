@@ -2,36 +2,40 @@
  "start": "2026-10-23",
  "end": "2026-11-30",
  "month": "2026-11",
- "updated": "2026-11-08T02:44:29.447Z",
+ "updated": "2026-11-08T09:30:48.978Z",
  "totalPlayers": 24,
  "players": [
   {
    "name": "Nd***747",
-   "wagered": 33949.09
+   "wagered": 34574.39
   },
   {
    "name": "Re***zzz",
-   "wagered": 31124.82
+   "wagered": 31564.34
   },
   {
    "name": "xx***",
-   "wagered": 5940.71
+   "wagered": 6000.58
   },
   {
    "name": "Dt***",
-   "wagered": 4498.43
+   "wagered": 5412.56
   },
   {
    "name": "Re***ine",
-   "wagered": 2040.98
+   "wagered": 4570.98
   },
   {
    "name": "Co***art",
-   "wagered": 1183.85
+   "wagered": 1241.29
   },
   {
    "name": "Hidden user",
    "wagered": 1108.58
+  },
+  {
+   "name": "ze***rev",
+   "wagered": 484.58
   },
   {
    "name": "Mr***ton",
@@ -56,10 +60,6 @@
   {
    "name": "No***Rev",
    "wagered": 228.17
-  },
-  {
-   "name": "ze***rev",
-   "wagered": 222
   },
   {
    "name": "sa***",
