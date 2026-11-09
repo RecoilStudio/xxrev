@@ -1,6 +1,6 @@
 {
  "month": "2026-11",
- "updated": "2026-11-09T12:21:13.727Z",
+ "updated": "2026-11-09T22:35:31.552Z",
  "totalPlayers": 18,
  "players": [
   {
@@ -21,7 +21,7 @@
   },
   {
    "name": "Dt***",
-   "wagered": 2608.05
+   "wagered": 2896.86
   },
   {
    "name": "Co***art",
@@ -48,6 +48,10 @@
    "wagered": 228.17
   },
   {
+   "name": "Re***",
+   "wagered": 97.84
+  },
+  {
    "name": "Xx***",
    "wagered": 14.43
   },
@@ -66,10 +70,6 @@
   {
    "name": "Ma***Dog",
    "wagered": 10
-  },
-  {
-   "name": "Re***",
-   "wagered": 8.21
   },
   {
    "name": "sa***",
