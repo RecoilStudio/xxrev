@@ -2,12 +2,12 @@
  "start": "2026-10-23",
  "end": "2026-11-30",
  "month": "2026-11",
- "updated": "2026-11-09T03:45:33.099Z",
- "totalPlayers": 24,
+ "updated": "2026-11-09T12:21:13.727Z",
+ "totalPlayers": 25,
  "players": [
   {
    "name": "Re***zzz",
-   "wagered": 39781.5
+   "wagered": 40152.5
   },
   {
    "name": "Nd***747",
@@ -88,6 +88,10 @@
   {
    "name": "si***",
    "wagered": 8.41
+  },
+  {
+   "name": "Re***",
+   "wagered": 8.21
   },
   {
    "name": "Gl***nis",

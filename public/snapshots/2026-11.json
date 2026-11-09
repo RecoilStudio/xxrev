@@ -1,11 +1,11 @@
 {
  "month": "2026-11",
- "updated": "2026-11-09T03:45:33.099Z",
- "totalPlayers": 17,
+ "updated": "2026-11-09T12:21:13.727Z",
+ "totalPlayers": 18,
  "players": [
   {
    "name": "Re***zzz",
-   "wagered": 36219.49
+   "wagered": 36590.49
   },
   {
    "name": "Nd***747",
@@ -66,6 +66,10 @@
   {
    "name": "Ma***Dog",
    "wagered": 10
+  },
+  {
+   "name": "Re***",
+   "wagered": 8.21
   },
   {
    "name": "sa***",
