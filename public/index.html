@@ -404,10 +404,7 @@
   /* ===== $250 race tab ===== */
   .race-window { margin: -10px 0 22px; color: var(--muted); font: 500 13px/1.5 var(--font-mono); }
   .race-window b { color: var(--text); font-weight: 600; }
-  .qbar { height: 4px; border-radius: 4px; background: var(--surface-2); margin-top: 8px; max-width: 240px; overflow: hidden; }
-  .qbar i { display: block; height: 100%; width: var(--w, 0%); border-radius: 4px; background: var(--accent); }
-  .qtag { display: inline-block; padding: 5px 10px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font: 600 12px/1 var(--font-mono); white-space: nowrap; }
-  .qtag.ok { background: var(--accent); color: var(--accent-ink); }
+  .race-msg { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px 22px; text-align: center; color: var(--accent); font-size: 18px; }
   .race-note { margin-top: 14px; color: var(--muted); font-size: 14px; }
   .race-note b { color: var(--text); }
 </style>
@@ -475,15 +472,9 @@
         <div class="stat"><small>Giveaway</small><strong class="green" id="raceGive"></strong></div>
         <div class="stat"><small>Qualify at</small><strong id="raceGoal"></strong></div>
         <div class="stat"><small id="raceLbl">Ends in</small><strong id="raceCount">--</strong></div>
-        <div class="stat"><small>Qualified</small><strong id="raceQual">--</strong></div>
       </div>
       <p class="race-window" id="raceWindow"></p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Rank</th><th>Player</th><th class="num">Wagered</th><th class="num">Status</th></tr></thead>
-          <tbody id="raceBody"></tbody>
-        </table>
-      </div>
+      <div class="race-msg"><b>Wagering data will be checked with Gamdom on the finish date.</b></div>
       <p class="race-note" id="raceNote"></p>
     </section>
 
@@ -540,8 +531,7 @@ const CONFIG = {
   prizes: [250, 175, 150, 125, 50, 50, 50, 50, 50, 50], // one prize per rank, top to bottom (1st to 10th). Ranks past the list earn no prize
   // One-week $250 race. Players who wager at least `goal` USD inside the window qualify.
   // start/end are the announced window (Nov 10 3:00 PM MST = 22:00 UTC, Nov 17 3:00 PM MST = 22:00 UTC).
-  // The live numbers in race.json are counted by whole UTC days (set in the GitHub Action).
-  race: { prize: 250, goal: 5000, start: "2026-11-10T22:00:00Z", end: "2026-11-17T22:00:00Z" },
+    race: { prize: 250, goal: 5000, start: "2026-11-10T22:00:00Z", end: "2026-11-17T22:00:00Z" },
   // Sample rows, only shown if leaderboard.json can't be loaded (for example before the first Action run).
   isSample: true,
   players: [
@@ -606,7 +596,7 @@ const CONFIG = {
     ["When does it reset and when are prizes paid?", "The leaderboard resets at the start of every month. Winners are contacted after the period closes and prizes are paid to their Gamdom accounts."],
     ["I already have a Gamdom account. Can I take part?", "Tracking is tied to the code used at sign-up. Ask in the Discord whether your existing account can be linked."],
     ["Why are usernames hidden?", "Names are partly masked to protect player privacy."],
-    ["How does the $250 race work?", "Wager $5,000 or more with code xxrev during the race window (Nov 10 to Nov 17) and you qualify for the $250 giveaway. Check the $250 Race tab to see who has qualified so far."],
+    ["How does the $250 race work?", "Wager $5,000 or more with code xxrev during the race window (Nov 10 to Nov 17) and you qualify for the $250 giveaway. Wagering is checked with Gamdom on the finish date."],
     ["Is gambling safe?", "Gambling always carries risk and you should only play with money you can afford to lose. You must be 18 or older, set deposit limits, take breaks and stop if it stops being fun."]
   ]
 };
@@ -968,23 +958,12 @@ buildCarousel($("#car-vlogs"), CONFIG.vlogTweets, "Revs Minivlogs posts");
 (function () {
   const R = CONFIG.race;
   const startAt = new Date(R.start), endAt = new Date(R.end);
-  let rows = [], total = 0, qualified = 0;
   const local = d => d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" });
   $("#raceGive").textContent = fmt(R.prize);
   $("#raceGoal").textContent = fmt(R.goal);
   $("#raceSub").textContent = `Wager ${fmt(R.goal)} or more with code ${CONFIG.code} during the race to qualify for the ${fmt(R.prize)} giveaway.`;
   $("#raceWindow").innerHTML = `Race window: <b>Nov 10, 3:00 PM MST</b> to <b>Nov 17, 3:00 PM MST</b> (${esc(local(startAt))} to ${esc(local(endAt))} your time)`;
-  $("#raceNote").innerHTML = `Only players signed up through the link with code <b>${esc(CONFIG.code)}</b> count. Wagers are tallied by UTC day and refreshed regularly, so standings can lag by a little. Qualifiers are confirmed when the race ends.`;
-
-  function render() {
-    qualified = rows.filter(p => p.wagered >= R.goal).length;
-    $("#raceQual").textContent = rows.length ? String(qualified) : "--";
-    $("#raceBody").innerHTML = rows.length ? rows.slice(0, 50).map((p, i) => {
-      const ok = p.wagered >= R.goal, pct = Math.min(100, Math.max(2, Math.round(p.wagered / R.goal * 100)));
-      return `<tr><td class="rank">${i + 1}</td><td>${esc(p.name)}<div class="qbar"><i style="--w:${pct}%"></i></div></td><td class="num">${fmt(p.wagered)}</td><td class="num">${ok ? '<span class="qtag ok">Qualified</span>' : `<span class="qtag">${fmt(R.goal - p.wagered)} to go</span>`}</td></tr>`;
-    }).join("") : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:28px">Race standings go live shortly. Sign up with the code and start wagering to get on the board.</td></tr>';
-  }
-
+  $("#raceNote").innerHTML = `Only players signed up through the link with code <b>${esc(CONFIG.code)}</b> count.`;
   function tickRace() {
     const now = Date.now();
     let ms, label = "Ends in";
@@ -999,25 +978,6 @@ buildCarousel($("#car-vlogs"), CONFIG.vlogTweets, "Revs Minivlogs posts");
     $("#raceCount").textContent = `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
   }
   tickRace(); setInterval(tickRace, 1000);
-
-  async function loadRace() {
-    try {
-      const r = await fetch("race.json?t=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      const d = await r.json();
-      if (!d || !Array.isArray(d.players)) throw new Error("bad shape");
-      rows = d.players.map(p => ({ name: String(p.name), wagered: Number(p.wagered) || 0 })).sort((a, b) => b.wagered - a.wagered);
-      total = d.totalPlayers == null ? rows.length : d.totalPlayers;
-    } catch (e) { rows = []; total = 0; }
-    render();
-  }
-  loadRace(); setInterval(loadRace, 300000);
-
-  const prev = window.onShow;
-  window.onShow = id => {
-    prev(id);
-    if (id === "race") countUp($("#raceQual"), qualified, n => rows.length ? String(Math.round(n)) : "--");
-  };
 })();
 
 loadLive();
