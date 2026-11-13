@@ -2,7 +2,7 @@
  "start": "2026-10-23",
  "end": "2026-11-30",
  "month": "2026-11",
- "updated": "2026-11-12T23:46:50.553Z",
+ "updated": "2026-11-13T04:12:35.511Z",
  "totalPlayers": 25,
  "players": [
   {
@@ -15,7 +15,7 @@
   },
   {
    "name": "xx***",
-   "wagered": 6852.01
+   "wagered": 6872.23
   },
   {
    "name": "Dt***",
@@ -34,6 +34,10 @@
    "wagered": 1241.29
   },
   {
+   "name": "Ma***Dog",
+   "wagered": 597.95
+  },
+  {
    "name": "ze***rev",
    "wagered": 484.58
   },
@@ -48,10 +52,6 @@
   {
    "name": "Fe***y44",
    "wagered": 362.71
-  },
-  {
-   "name": "Ma***Dog",
-   "wagered": 361.31
   },
   {
    "name": "si***rev",
