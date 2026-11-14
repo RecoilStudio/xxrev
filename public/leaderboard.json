@@ -2,7 +2,7 @@
  "start": "2026-10-23",
  "end": "2026-11-30",
  "month": "2026-11",
- "updated": "2026-11-13T19:39:50.285Z",
+ "updated": "2026-11-14T00:28:22.767Z",
  "totalPlayers": 25,
  "players": [
   {
@@ -11,7 +11,11 @@
   },
   {
    "name": "Nd***747",
-   "wagered": 39742.37
+   "wagered": 41055.68
+  },
+  {
+   "name": "Hidden user",
+   "wagered": 8453.97
   },
   {
    "name": "xx***",
@@ -20,10 +24,6 @@
   {
    "name": "Dt***",
    "wagered": 6286.67
-  },
-  {
-   "name": "Hidden user",
-   "wagered": 5532.48
   },
   {
    "name": "Ja***rne",
