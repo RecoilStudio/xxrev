@@ -407,6 +407,18 @@
   .race-msg { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px 22px; text-align: center; color: var(--accent); font-size: 18px; }
   .race-note { margin-top: 14px; color: var(--muted); font-size: 14px; }
   .race-note b { color: var(--text); }
+  .race-h3 { margin: 30px 0 12px; font: 700 13px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .race-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .q-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: grid; gap: 10px; min-width: 0; }
+  .q-card .nm { font: 700 22px/1.1 var(--font-mono); overflow-wrap: anywhere; }
+  .q-card .tag { justify-self: start; padding: 6px 12px; border-radius: 999px; background: rgba(47,224,116,.12); border: 1px solid rgba(47,224,116,.4); color: var(--accent); font: 700 12px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  .q-card .tag::before { content: "\2713\00a0"; }
+  .winners { margin-top: 28px; border: 1px solid var(--accent); border-radius: 18px; padding: 32px 22px; text-align: center; background: linear-gradient(180deg, rgba(47,224,116,.16), var(--surface) 80%); box-shadow: 0 0 60px rgba(47,224,116,.14); }
+  .winners h3 { margin: 0 0 16px; font: 800 clamp(26px, 5vw, 40px)/1.1 var(--font-display); text-transform: uppercase; letter-spacing: -.01em; }
+  .winners .wn { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 18px; }
+  .winners .wn b { padding: 10px 20px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 700 20px var(--font-mono); }
+  .winners p { margin: 0; color: var(--text); font-size: 20px; font-weight: 600; }
+  .winners p span { color: var(--accent); }
 </style>
 <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -474,7 +486,18 @@
         <div class="stat"><small id="raceLbl">Ends in</small><strong id="raceCount">--</strong></div>
       </div>
       <p class="race-window" id="raceWindow"></p>
-      <div class="race-msg"><b>Wagering data will be checked with Gamdom on the finish date.</b></div>
+      <div class="race-msg"><b>The race has finished. Wagering was checked with Gamdom.</b></div>
+      <h3 class="race-h3">Qualified players</h3>
+      <div class="race-list">
+        <div class="q-card"><span class="nm">Re***zzz</span><span class="tag">Qualified for $250 giveaway</span></div>
+        <div class="q-card"><span class="nm">xx*****</span><span class="tag">Qualified for $250 giveaway</span></div>
+        <div class="q-card"><span class="nm">Hidden user</span><span class="tag">Qualified for $250 giveaway</span></div>
+      </div>
+      <div class="winners">
+        <h3>Congratulations to our two winners</h3>
+        <div class="wn"><b>Re***zzz</b><b>xx*****</b></div>
+        <p><span>$125 USD</span> each</p>
+      </div>
       <p class="race-note" id="raceNote"></p>
     </section>
 
@@ -963,7 +986,7 @@ buildCarousel($("#car-vlogs"), CONFIG.vlogTweets, "Revs Minivlogs posts");
   $("#raceGoal").textContent = fmt(R.goal);
   $("#raceSub").textContent = `Wager ${fmt(R.goal)} or more with code ${CONFIG.code} during the race to qualify for the ${fmt(R.prize)} giveaway.`;
   $("#raceWindow").innerHTML = `Race window: <b>Nov 10, 3:00 PM MST</b> to <b>Nov 17, 3:00 PM MST</b> (${esc(local(startAt))} to ${esc(local(endAt))} your time)`;
-  $("#raceNote").innerHTML = `Only players signed up through the link with code <b>${esc(CONFIG.code)}</b> count.`;
+  $("#raceNote").innerHTML = `Only players signed up through the link with code <b>${esc(CONFIG.code)}</b> counted. Thanks to everyone who took part.`;
   function tickRace() {
     const now = Date.now();
     let ms, label = "Ends in";
