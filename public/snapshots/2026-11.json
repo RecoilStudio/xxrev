@@ -1,7 +1,7 @@
 {
  "month": "2026-11",
- "updated": "2026-11-26T20:23:37.878Z",
- "totalPlayers": 19,
+ "updated": "2026-11-27T11:53:52.484Z",
+ "totalPlayers": 20,
  "players": [
   {
    "name": "Re***zzz",
@@ -17,11 +17,15 @@
   },
   {
    "name": "xx***",
-   "wagered": 6141.81
+   "wagered": 6142.03
   },
   {
    "name": "Ja***rne",
    "wagered": 5009.51
+  },
+  {
+   "name": "Hidden user",
+   "wagered": 4798.6
   },
   {
    "name": "Dt***",
