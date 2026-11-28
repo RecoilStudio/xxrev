@@ -1,15 +1,19 @@
 {
  "month": "2026-11",
- "updated": "2026-11-28T02:53:39.549Z",
- "totalPlayers": 21,
+ "updated": "2026-11-28T11:09:31.569Z",
+ "totalPlayers": 22,
  "players": [
   {
    "name": "Re***zzz",
-   "wagered": 63108.61
+   "wagered": 63108.68
   },
   {
    "name": "Hidden user",
    "wagered": 21825.92
+  },
+  {
+   "name": "Hidden user",
+   "wagered": 13196
   },
   {
    "name": "Nd***747",
@@ -20,12 +24,8 @@
    "wagered": 11291.12
   },
   {
-   "name": "Hidden user",
-   "wagered": 7112.03
-  },
-  {
    "name": "xx***",
-   "wagered": 6142.03
+   "wagered": 6496.09
   },
   {
    "name": "Ja***rne",
@@ -48,6 +48,10 @@
    "wagered": 732.66
   },
   {
+   "name": "No***Rev",
+   "wagered": 265.09
+  },
+  {
    "name": "Ma***Dog",
    "wagered": 250.48
   },
@@ -56,12 +60,12 @@
    "wagered": 235.57
   },
   {
-   "name": "No***Rev",
-   "wagered": 228.17
-  },
-  {
    "name": "Re***",
    "wagered": 99.24
+  },
+  {
+   "name": "XX***DDY",
+   "wagered": 20.5
   },
   {
    "name": "Xx***",
